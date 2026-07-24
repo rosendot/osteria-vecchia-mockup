@@ -1,0 +1,63 @@
+---
+/** Fixed site header — goes solid on scroll, collapses to a drawer on mobile.
+ *  The active nav item is marked from the current path. */
+const path = Astro.url.pathname;
+const isActive = (href: string) => path === href;
+
+const links = [
+  { href: "/", label: "Home" },
+  { href: "/menu/", label: "Menu" },
+  { href: "/our-story/", label: "Our Story" },
+  { href: "/reservations/", label: "Reservations" },
+  { href: "/contact/", label: "Contact" },
+];
+---
+
+<header class="site-header" id="header">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <span class="mark">OV</span>
+      <span class="name">Osteria Vecchia<small>North End · Boston</small></span>
+    </a>
+    <nav class="nav" id="nav">
+      {
+        links.map((l) => (
+          <a
+            class={isActive(l.href) ? "lnk active" : "lnk"}
+            href={l.href}
+            aria-current={isActive(l.href) ? "page" : undefined}
+          >
+            {l.label}
+          </a>
+        ))
+      }
+      <a class="btn" href="/reservations/">Book a Table</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<script>
+  // Header turns solid on scroll
+  const header = document.getElementById("header");
+  const onScroll = () => header?.classList.toggle("scrolled", window.scrollY > 40);
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  // Mobile nav
+  const navToggle = document.getElementById("navToggle");
+  const nav = document.getElementById("nav");
+  navToggle?.addEventListener("click", () => {
+    const open = nav?.classList.toggle("open");
+    navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+  nav?.addEventListener("click", (e) => {
+    const t = e.target as HTMLElement;
+    if (t.classList.contains("lnk") || t.classList.contains("btn")) {
+      nav.classList.remove("open");
+      navToggle?.setAttribute("aria-expanded", "false");
+    }
+  });
+</script>

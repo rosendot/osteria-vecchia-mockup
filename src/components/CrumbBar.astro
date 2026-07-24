@@ -1,0 +1,23 @@
+---
+/** Dark top band on every interior page — breadcrumb trail, eyebrow, H1, lede. */
+interface Props {
+  here: string;
+  eyebrow: string;
+  title: string;
+  lede: string;
+}
+const { here, eyebrow, title, lede } = Astro.props;
+---
+
+<section class="crumb-bar">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span class="sep">/</span>
+      <span class="here">{here}</span>
+    </nav>
+    <p class="eyebrow">{eyebrow}</p>
+    <h1>{title}</h1>
+    <p class="lede">{lede}</p>
+  </div>
+</section>

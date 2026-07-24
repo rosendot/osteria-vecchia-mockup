@@ -1,0 +1,163 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ImageSlot from "../components/ImageSlot.astro";
+import CrumbBar from "../components/CrumbBar.astro";
+import CtaBanner from "../components/CtaBanner.astro";
+
+const rows = [
+  {
+    slot: "The 1987 brick oven, fire glowing",
+    eyebrow: "The heart of the room",
+    title: "The oven that started it all",
+    body: "Giuseppe laid the bricks himself in the winter of '86. It's been lit almost every day since — the same oven that chars the Margherita, blisters the Diavola, and slow-braises the osso buco. We've patched it more times than we can count, but we've never replaced it. The room is built around it, and so is everything we cook.",
+  },
+  {
+    slot: "Flour-dusted counter, hands rolling pasta",
+    eyebrow: "Every single morning",
+    title: "Pasta by hand, every morning",
+    body: "Before the doors open, the counter's already dusted with flour. Tagliatelle gets rolled and cut, ravioli gets folded, and whatever we make is what you eat that night — never dried, never frozen, never yesterday's. It's slower and it's harder, and it's the whole reason people drive in from three towns over.",
+  },
+];
+
+const team = [
+  {
+    name: "Giuseppe",
+    role: "Founder",
+    bio: "Opened the doors in '87 and still walks the floor most nights. Will tell you if you ordered wrong.",
+    slot: "Portrait: Giuseppe",
+  },
+  {
+    name: "Marco",
+    role: "Head Chef",
+    bio: "Giuseppe's son. Grew up on a stool by the oven and runs the kitchen now, recipes intact.",
+    slot: "Portrait: Marco",
+  },
+  {
+    name: "Lucia",
+    role: "Pastry",
+    bio: "The tiramisù and the cannoli are hers. Nothing leaves her station that she wouldn't serve her mother.",
+    slot: "Portrait: Lucia",
+  },
+  {
+    name: "Sofia",
+    role: "Front of House",
+    bio: "Knows the regulars by name and their tables by heart. She'll find you a seat and a good bottle.",
+    slot: "Portrait: Sofia",
+  },
+];
+
+const stats = [
+  { num: "38", label: "years open" },
+  { num: "3", label: "generations" },
+  { num: "40k", label: "plates of pasta a year" },
+  { num: "1", label: "original oven" },
+];
+---
+
+<Layout title="Our Story — Osteria Vecchia · North End, Boston">
+  <CrumbBar
+    here="Our Story"
+    eyebrow="Since 1987"
+    title="One family, one kitchen, thirty-eight years."
+    lede="It started with a brick oven and a recipe box. It's still the same block, the same family, and mostly the same recipes."
+  />
+
+  <!-- ===================== TEAM SPOTLIGHT ===================== -->
+  <section class="section spotlight">
+    <div class="wrap">
+      <div class="spotlight-grid">
+        <div class="spotlight-media">
+          <ImageSlot label="Portrait: Giuseppe, the founder, in the dining room" />
+          <span class="badge">Giuseppe, 1987</span>
+        </div>
+        <div class="spotlight-body">
+          <p class="eyebrow">How it began</p>
+          <h2>Giuseppe opened the doors in 1987.</h2>
+          <p>
+            He came over from Abruzzo with one brick oven, his mother's recipe
+            box, and not much else. The room on Hanover Street had been a shoe
+            shop; he scrubbed it out, built the oven himself, and hung his
+            mother's photo over the pass where it still hangs today.
+          </p>
+          <p>
+            The first menu was short — whatever pasta he'd rolled that morning
+            and whatever the fish market had that afternoon. People came for the
+            ragù and stayed because Giuseppe remembered their names. Nearly forty
+            years later, that hasn't changed.
+          </p>
+          <p>
+            His son Marco runs the kitchen now, but Giuseppe still walks the
+            floor most nights, still tastes the sauce, still tells you if you
+            ordered wrong.
+          </p>
+          <p class="sig">— The Marchetti family</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FEATURE ALTERNATING ===================== -->
+  <section class="section feature-alt">
+    <div class="wrap">
+      <div class="fa-rows">
+        {
+          rows.map((r, i) => (
+            <div class={i % 2 === 1 ? "fa-row flip" : "fa-row"}>
+              <div class="fa-media">
+                <ImageSlot label={r.slot} />
+              </div>
+              <div class="fa-body">
+                <p class="eyebrow">{r.eyebrow}</p>
+                <h3>{r.title}</h3>
+                <p>{r.body}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TEAM GRID ===================== -->
+  <section class="section team">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">The people in the kitchen</p>
+        <h2>Who's cooking your dinner.</h2>
+      </div>
+      <div class="team-grid">
+        {
+          team.map((m) => (
+            <div class="team-card">
+              <ImageSlot label={m.slot} />
+              <h3>{m.name}</h3>
+              <p class="role">{m.role}</p>
+              <p>{m.bio}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STATS ===================== -->
+  <section class="section stats">
+    <div class="wrap">
+      <div class="stat-grid">
+        {
+          stats.map((s) => (
+            <div class="stat">
+              <div class="num">{s.num}</div>
+              <div class="lbl">{s.label}</div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaBanner
+    title="Come be part of the story."
+    body="Pull up a chair. There's always room at the table for one more."
+  />
+</Layout>

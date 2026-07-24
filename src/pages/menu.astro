@@ -1,0 +1,112 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ImageSlot from "../components/ImageSlot.astro";
+import CrumbBar from "../components/CrumbBar.astro";
+import CtaBanner from "../components/CtaBanner.astro";
+import { dishes, categories, drinks } from "../data/menu";
+---
+
+<Layout title="Menu — Osteria Vecchia · North End, Boston">
+  <CrumbBar
+    here="Menu"
+    eyebrow="Dinner · Tuesday – Sunday"
+    title="The menu, start to finish."
+    lede="It changes with the season and what the market has that morning, but these are the plates we're known for. Ask your server what's fresh tonight."
+  />
+
+  <!-- ===================== MENU GRID (filterable) ===================== -->
+  <section class="section menu">
+    <div class="wrap">
+      <div class="menu-tabs" id="menuTabs">
+        {
+          categories.map((c) => (
+            <button
+              class={c.key === "all" ? "menu-tab active" : "menu-tab"}
+              data-cat={c.key}
+            >
+              {c.label}
+            </button>
+          ))
+        }
+      </div>
+      <div class="menu-grid" id="menuGrid">
+        {
+          dishes.map((d) => (
+            <article class="m-card" data-cat={d.category}>
+              <ImageSlot label={d.slot} />
+              <div class="m-body">
+                <div class="m-head">
+                  <h3>{d.name}</h3>
+                  <span class="m-price">{d.price}</span>
+                </div>
+                <p>{d.blurb}</p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WINE & COCKTAILS ===================== -->
+  <section class="section menu-list-sec">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">To drink</p>
+        <h2>Wine &amp; Cocktails</h2>
+        <p>
+          A short, honest list — Italian pours and the classics, nothing you need
+          a menu to explain.
+        </p>
+      </div>
+      <div class="menu-list">
+        {
+          drinks.map((d) => (
+            <div class="leader-row">
+              <span class="nm">
+                {d.name}
+                <small>{d.note}</small>
+              </span>
+              <span class="dots" />
+              <span class="pr">
+                {d.price}
+                {d.unit && <span class="unit">{d.unit}</span>}
+              </span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaBanner
+    title="Come hungry."
+    body="Reserve a table and let us feed you the way we'd feed our own family."
+  />
+</Layout>
+
+<script>
+  // Menu category filter
+  const tabs = document.getElementById("menuTabs");
+  const grid = document.getElementById("menuGrid");
+
+  if (tabs && grid) {
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>(".m-card"));
+
+    tabs.addEventListener("click", (e) => {
+      const btn = (e.target as HTMLElement).closest(".menu-tab");
+      if (!btn) return;
+
+      tabs
+        .querySelectorAll(".menu-tab")
+        .forEach((t) => t.classList.remove("active"));
+      btn.classList.add("active");
+
+      const cat = btn.getAttribute("data-cat");
+      cards.forEach((c) => {
+        c.style.display =
+          cat === "all" || c.getAttribute("data-cat") === cat ? "" : "none";
+      });
+    });
+  }
+</script>

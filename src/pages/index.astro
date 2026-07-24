@@ -1,0 +1,133 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ImageSlot from "../components/ImageSlot.astro";
+import CtaBanner from "../components/CtaBanner.astro";
+import { dishes } from "../data/menu";
+import { testimonials } from "../data/testimonials";
+
+const pillars = [
+  {
+    num: "I",
+    title: "Pasta made fresh daily",
+    body: "Rolled, cut, and shaped by hand every morning — never dried, never yesterday's.",
+  },
+  {
+    num: "II",
+    title: "Wood-fired since day one",
+    body: "The same brick oven we lit in 1987 still chars every pizza and braises every roast.",
+  },
+  {
+    num: "III",
+    title: "Family recipes, nothing frozen",
+    body: "Everything's made in-house from Nonna's recipe box. If it isn't fresh, it isn't served.",
+  },
+];
+
+const featured = dishes.filter((d) => d.featured);
+---
+
+<Layout title="Osteria Vecchia — Handmade Pasta · North End, Boston">
+  <!-- ===================== HERO ===================== -->
+  <section class="hero" id="top">
+    <ImageSlot label="Full-bleed photo: rustic pasta dish on dark wood, warm candlelight" />
+    <div class="scrim"></div>
+    <div class="hero-inner">
+      <div class="wrap">
+        <p class="eyebrow">North End, Boston · Since 1987</p>
+        <h1>Handmade pasta, the way Nonna taught us.</h1>
+        <p class="subhead">
+          Three generations, one kitchen, and a menu that still changes with the
+          season.
+        </p>
+        <div class="cta-row">
+          <a class="btn" href="/reservations/">Reserve a Table</a>
+          <a class="btn ghost on-dark" href="/menu/">See the Menu</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FEATURE GRID ===================== -->
+  <section class="section features">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Why people keep coming back</p>
+        <h2>Nothing fancy. Just done right, every night.</h2>
+      </div>
+      <div class="feature-grid">
+        {
+          pillars.map((p) => (
+            <div class="pillar">
+              <div class="num">{p.num}</div>
+              <div class="rule" />
+              <h3>{p.title}</h3>
+              <p>{p.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MENU TEASER ===================== -->
+  <section class="section menu">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">A few favorites</p>
+        <h2>What the regulars order.</h2>
+        <p>A small taste of the menu — the plates people drive across town for.</p>
+      </div>
+      <div class="menu-grid">
+        {
+          featured.map((d) => (
+            <article class="m-card">
+              <ImageSlot label={d.slot} />
+              <div class="m-body">
+                <div class="m-head">
+                  <h3>{d.name}</h3>
+                  <span class="m-price">{d.price}</span>
+                </div>
+                <p>{d.teaserBlurb ?? d.blurb}</p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+      <div class="menu-more">
+        <a class="text-link" href="/menu/">See the full menu →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TESTIMONIALS ===================== -->
+  <section class="section testimonials">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">From the regulars</p>
+        <h2>People don't come once.</h2>
+      </div>
+      <div class="t-grid">
+        {
+          testimonials.map((t) => (
+            <article class="t-card">
+              <div class="stars">★★★★★</div>
+              <blockquote>"{t.quote}"</blockquote>
+              <div class="who">
+                <div class="avatar">{t.initial}</div>
+                <div class="meta">
+                  <b>{t.name}</b>
+                  <span>{t.location}</span>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaBanner
+    title="Tables fill up fast on weekends."
+    body="Reserve yours before they're gone — Friday and Saturday book out days ahead."
+  />
+</Layout>

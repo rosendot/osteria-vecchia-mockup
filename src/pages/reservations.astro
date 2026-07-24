@@ -1,0 +1,308 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ImageSlot from "../components/ImageSlot.astro";
+import CrumbBar from "../components/CrumbBar.astro";
+import MapBox from "../components/MapBox.astro";
+
+const policies = [
+  "Parties of 6 or more, please call ahead so we can seat you together.",
+  "Friday and Saturday tables go fast — reserve early in the week.",
+  "We hold your table with a 15-minute grace period. Running late? Give us a ring.",
+  "Closed Mondays. Tuesday through Sunday, the kitchen's on from 5 to 10.",
+];
+
+const partySizes = [
+  "1 guest",
+  "2 guests",
+  "3 guests",
+  "4 guests",
+  "5 guests",
+  "6 guests",
+  "7+ (please call)",
+];
+
+const times = [
+  "5:00 pm",
+  "5:30 pm",
+  "6:00 pm",
+  "6:30 pm",
+  "7:00 pm",
+  "7:30 pm",
+  "8:00 pm",
+  "8:30 pm",
+  "9:00 pm",
+];
+
+// data-day matches JS getDay(): 0 = Sunday.
+const hours = [
+  { day: "Monday", time: "Closed", index: 1, closed: true },
+  { day: "Tuesday", time: "5:00 – 10:00 pm", index: 2 },
+  { day: "Wednesday", time: "5:00 – 10:00 pm", index: 3 },
+  { day: "Thursday", time: "5:00 – 10:00 pm", index: 4 },
+  { day: "Friday", time: "5:00 – 10:00 pm", index: 5 },
+  { day: "Saturday", time: "5:00 – 10:00 pm", index: 6 },
+  { day: "Sunday", time: "5:00 – 10:00 pm", index: 0 },
+];
+
+const faqs = [
+  {
+    q: "Do you take walk-ins?",
+    a: "Always. We keep a handful of tables and the whole bar open for walk-ins every night. Early or late is your best bet on a weekend — 5pm and after 8:30 tend to have room.",
+  },
+  {
+    q: "Can I book for a large party?",
+    a: "For six or more, give us a call at 617-555-0142 rather than using the form — we'll find the right table and talk through a family-style menu if you'd like one. We can seat groups up to about fourteen.",
+  },
+  {
+    q: "Is there a dress code?",
+    a: "None. Come as you are — we've served guests in suits and in Sox jerseys on the same night. It's a neighborhood trattoria, not a fuss.",
+  },
+  {
+    q: "Do you have outdoor seating?",
+    a: "A few sidewalk tables on Hanover Street from late spring through early fall, weather permitting. They're first-come, first-served — we don't reserve them, but ask and we'll seat you outside if one's free.",
+  },
+  {
+    q: "Can you handle dietary restrictions?",
+    a: "Yes. We make gluten-free pasta in-house and can adapt most dishes for vegetarian or dairy-free diners. Note it on your reservation or tell your server — Marco would rather know before the plate goes out.",
+  },
+];
+---
+
+<Layout title="Reservations — Osteria Vecchia · North End, Boston">
+  <CrumbBar
+    here="Reservations"
+    eyebrow="Tue – Sun · 5–10pm"
+    title="Reserve your table."
+    lede="Weekends book out days ahead, so grab a table while you can. Fill out the form below and we'll confirm by phone."
+  />
+
+  <!-- ===================== HERO SPLIT ===================== -->
+  <section class="hero-split">
+    <div class="hs-body">
+      <p class="eyebrow">Before you book</p>
+      <h1>A few house rules.</h1>
+      <p class="lede">
+        Nothing complicated — just how we keep the room running smoothly on a
+        busy night.
+      </p>
+      <ul class="policy">
+        {policies.map((p) => <li>{p}</li>)}
+      </ul>
+    </div>
+    <div class="hs-media">
+      <ImageSlot label="Warm photo: the dining room, candlelit tables, brick wall" />
+    </div>
+  </section>
+
+  <!-- ===================== RESERVATION FORM ===================== -->
+  <section class="section contact-split">
+    <div class="wrap">
+      <div class="cs-grid">
+        <form class="res-form" id="resForm" novalidate>
+          <h3>Request a table</h3>
+          <div class="form-grid">
+            <div class="field full">
+              <label for="r-name">Name <span class="req">*</span></label>
+              <input
+                type="text"
+                id="r-name"
+                name="name"
+                autocomplete="name"
+                placeholder="Angelo Marchetti"
+                required
+              />
+            </div>
+            <div class="field">
+              <label for="r-phone">Phone <span class="req">*</span></label>
+              <input
+                type="tel"
+                id="r-phone"
+                name="phone"
+                autocomplete="tel"
+                placeholder="617-555-0142"
+                required
+              />
+            </div>
+            <div class="field">
+              <label for="r-party">Party size</label>
+              <select id="r-party" name="party">
+                {
+                  partySizes.map((p) => (
+                    <option selected={p === "2 guests"}>{p}</option>
+                  ))
+                }
+              </select>
+            </div>
+            <div class="field">
+              <label for="r-date">Date</label>
+              <input type="date" id="r-date" name="date" />
+            </div>
+            <div class="field">
+              <label for="r-time">Time</label>
+              <select id="r-time" name="time">
+                {times.map((t) => <option selected={t === "6:30 pm"}>{t}</option>)}
+              </select>
+            </div>
+            <div class="field full">
+              <label for="r-notes">Anything we should know?</label>
+              <textarea
+                id="r-notes"
+                name="notes"
+                placeholder="Birthday, allergies, a quiet corner, high chair — tell us and we'll take care of it."
+              ></textarea>
+            </div>
+          </div>
+          <button class="btn" type="submit">Request Reservation</button>
+          <p class="fineprint">
+            We'll call to confirm — usually within a couple of hours. No table is
+            booked until you hear from us.
+          </p>
+        </form>
+
+        <div class="cs-info">
+          <h3>Find us</h3>
+          <MapBox label="312 Hanover St · North End" />
+          <div>
+            <div class="contact-row">
+              <div class="k">Address</div>
+              <div class="v">312 Hanover St<br />Boston, MA 02113</div>
+            </div>
+            <div class="contact-row">
+              <div class="k">Phone</div>
+              <div class="v"><a href="tel:+16175550142">617-555-0142</a></div>
+            </div>
+            <div class="contact-row">
+              <div class="k">Hours</div>
+              <div class="v">Tue – Sun · 5:00 – 10:00 pm<br />Closed Mondays</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HOURS CARD ===================== -->
+  <section class="section hours-sec">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">When we're open</p>
+        <h2>Kitchen hours.</h2>
+      </div>
+      <div class="hours-card">
+        <div class="hours-status" id="hoursStatus">
+          <span class="dot" id="statusDot"></span>
+          <b id="statusText">Open tonight</b>
+          <span id="statusSub">Tue – Sun · 5–10pm</span>
+        </div>
+        <div class="hours-rows" id="hoursRows">
+          {
+            hours.map((h) => (
+              <div
+                class={h.closed ? "hours-row closed-day" : "hours-row"}
+                data-day={h.index}
+              >
+                <span class="day">{h.day}</span>
+                <span class="time">{h.time}</span>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FAQ ===================== -->
+  <section class="section faq">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Good to know</p>
+        <h2>Reservation questions.</h2>
+      </div>
+      <div class="faq-list">
+        {
+          faqs.map((f) => (
+            <details class="faq-item">
+              <summary>
+                {f.q}
+                <span class="mk" />
+              </summary>
+              <div class="ans">
+                <p>{f.a}</p>
+              </div>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // ── Hours card ─────────────────────────────────────────────────────────
+  // Highlights today and sets the open/closed banner. Service is 5–10pm
+  // Tue–Sun; note the source design compared `hour >= 5` against a 24-hour
+  // clock, which read as "open" from 5am — 17 is the correct boundary.
+  const OPEN_HOUR = 17;
+  const CLOSE_HOUR = 22;
+
+  const rows = document.querySelectorAll<HTMLElement>("#hoursRows .hours-row");
+  const dot = document.getElementById("statusDot");
+  const text = document.getElementById("statusText");
+  const sub = document.getElementById("statusSub");
+
+  if (rows.length && dot && text && sub) {
+    const now = new Date();
+    const day = now.getDay(); // 0 Sun … 6 Sat
+    const hour = now.getHours();
+
+    rows.forEach((r) => {
+      if (Number(r.dataset.day) === day) r.classList.add("today");
+    });
+
+    if (day === 1) {
+      dot.classList.add("closed");
+      text.textContent = "Closed today";
+      sub.textContent = "See you Tuesday";
+    } else if (hour >= OPEN_HOUR && hour < CLOSE_HOUR) {
+      text.textContent = "Open now";
+      sub.textContent = "Kitchen open until 10pm";
+    } else {
+      dot.classList.add("closed");
+      text.textContent = "Closed right now";
+      sub.textContent =
+        hour < OPEN_HOUR ? "Opens today at 5pm" : "Opens tomorrow at 5pm";
+    }
+  }
+
+  // ── Reservation form ───────────────────────────────────────────────────
+  // Demo only — the mockup has no backend, so a valid submit confirms in place.
+  const form = document.getElementById("resForm") as HTMLFormElement | null;
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const nameEl = document.getElementById("r-name") as HTMLInputElement;
+    const phoneEl = document.getElementById("r-phone") as HTMLInputElement;
+    const name = nameEl.value.trim();
+    const phone = phoneEl.value.trim();
+
+    if (!name || !phone) {
+      ([
+        [nameEl, name],
+        [phoneEl, phone],
+      ] as const).forEach(([el, val]) => {
+        el.style.borderColor = val ? "" : "var(--color-primary)";
+      });
+      return;
+    }
+
+    const first = name.split(" ")[0].replace(/[<>&]/g, "");
+    const confirmation = document.createElement("div");
+    confirmation.className = "form-sent";
+    confirmation.innerHTML =
+      `<div class="form-sent__head">Grazie, ${first}.</div>` +
+      `<p>We’ve got your request. Someone from the family — not a booking bot — will call to confirm within a couple of hours. If it’s for tonight, give us a ring at <a href="tel:+16175550142">617-555-0142</a>.</p>`;
+
+    form.replaceChildren(confirmation);
+  });
+</script>

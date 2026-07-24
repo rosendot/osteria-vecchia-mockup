@@ -1,0 +1,23 @@
+---
+/** Red conversion banner. Copy differs per page, so it's all props. */
+interface Props {
+  title: string;
+  body: string;
+  cta?: string;
+  href?: string;
+}
+const {
+  title,
+  body,
+  cta = "Book a Table",
+  href = "/reservations/",
+} = Astro.props;
+---
+
+<section class="section cta-banner">
+  <div class="wrap">
+    <h2>{title}</h2>
+    <p>{body}</p>
+    <a class="btn" href={href}>{cta}</a>
+  </div>
+</section>

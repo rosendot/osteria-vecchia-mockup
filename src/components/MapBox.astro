@@ -1,44 +1,25 @@
 ---
-/** Stylized CSS map of the North End — no Maps embed, no API key.
- *  The Reservations and Contact pages draw slightly different street grids. */
+/** Google Maps embed of the restaurant. Reservations + Contact.
+ *  Keyless embed form (`?q=...&output=embed`) — no Maps API key required. */
 interface Props {
-  /** "compact" for the reservations sidebar, "wide" for the contact page. */
+  /** "compact" for the reservations sidebar, "wide" for the contact page.
+   *  Controls zoom and box height: the sidebar is narrow, so it pulls in one
+   *  step closer to stay legible at that width. */
   variant?: "compact" | "wide";
   label: string;
 }
 const { variant = "compact", label } = Astro.props;
+
+const ADDRESS = "312 Hanover St, Boston, MA 02113";
+const zoom = variant === "wide" ? 15 : 16;
+const src = `https://www.google.com/maps?q=${encodeURIComponent(ADDRESS)}&z=${zoom}&output=embed`;
 ---
 
-<div class="map-box" aria-label={`Map of ${label}`}>
-  <div class="roads">
-    {
-      variant === "wide" ? (
-        <>
-          <div class="road" style="top:0; bottom:0; left:44%; width:8px;" />
-          <div class="road" style="top:34%; left:0; right:0; height:6px;" />
-          <div class="road" style="top:66%; left:0; right:0; height:5px; opacity:.75;" />
-          <div class="road" style="top:0; bottom:0; left:74%; width:4px; opacity:.7;" />
-          <div class="road" style="top:0; bottom:0; left:20%; width:4px; opacity:.6;" />
-        </>
-      ) : (
-        <>
-          <div class="road" style="top:0; bottom:0; left:46%; width:7px;" />
-          <div class="road" style="top:38%; left:0; right:0; height:5px;" />
-          <div class="road" style="top:70%; left:0; right:0; height:4px; opacity:.7;" />
-          <div class="road" style="top:0; bottom:0; left:76%; width:4px; opacity:.7;" />
-        </>
-      )
-    }
-  </div>
-  <div
-    class="river"
-    style={
-      variant === "wide"
-        ? "top:0; bottom:0; right:0; width:20%; transform:skewX(-10deg);"
-        : "top:0; bottom:0; right:0; width:22%; transform:skewX(-8deg);"
-    }
-  >
-  </div>
-  <div class="pin"></div>
+<div class="map-box">
+  <iframe
+    title={`Map of Osteria Vecchia — ${label}`}
+    src={src}
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"></iframe>
   <span class="maplbl">{label}</span>
 </div>

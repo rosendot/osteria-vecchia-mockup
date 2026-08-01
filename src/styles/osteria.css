@@ -98,12 +98,7 @@ a { color: inherit; }
 .brand { display: flex; align-items: center; gap: var(--space-3); text-decoration: none; }
 .brand .mark {
   width: 44px; height: 44px; flex: none;
-  border-radius: var(--radius-full);
-  background: transparent;
-  display: grid; place-items: center;
-  color: var(--color-secondary); font-family: var(--font-heading);
-  font-size: 1.15rem; font-weight: 700; font-style: italic;
-  border: 2px solid var(--color-secondary);
+  display: block; object-fit: contain;
 }
 .brand .name {
   font-family: var(--font-heading);

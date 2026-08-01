@@ -90,7 +90,10 @@ const faqs = [
       </ul>
     </div>
     <div class="hs-media">
-      <ImageSlot label="Warm photo: the dining room, candlelit tables, brick wall" />
+      <ImageSlot
+        src="/photos/interior-dining-room.webp"
+        alt="The dining room at night — candlelit tables, warm lamps and diners talking"
+      />
     </div>
   </section>
 
@@ -189,10 +192,10 @@ const faqs = [
         <h2>Kitchen hours.</h2>
       </div>
       <div class="hours-card">
-        <div class="hours-status" id="hoursStatus">
-          <span class="dot" id="statusDot"></span>
-          <b id="statusText">Open tonight</b>
-          <span id="statusSub">Tue – Sun · 5–10pm</span>
+        <div class="hours-head">
+          <span class="hh-title">Kitchen</span>
+          <span class="hh-pill" id="statusPill">Open now</span>
+          <span class="hh-sub" id="statusSub">Tonight until 10pm</span>
         </div>
         <div class="hours-rows" id="hoursRows">
           {
@@ -239,18 +242,17 @@ const faqs = [
 
 <script>
   // ── Hours card ─────────────────────────────────────────────────────────
-  // Highlights today and sets the open/closed banner. Service is 5–10pm
-  // Tue–Sun; note the source design compared `hour >= 5` against a 24-hour
-  // clock, which read as "open" from 5am — 17 is the correct boundary.
+  // Marks today's row and sets the status pill. Service is 5–10pm Tue–Sun;
+  // note the source design compared `hour >= 5` against a 24-hour clock,
+  // which read as "open" from 5am — 17 is the correct boundary.
   const OPEN_HOUR = 17;
   const CLOSE_HOUR = 22;
 
   const rows = document.querySelectorAll<HTMLElement>("#hoursRows .hours-row");
-  const dot = document.getElementById("statusDot");
-  const text = document.getElementById("statusText");
+  const pill = document.getElementById("statusPill");
   const sub = document.getElementById("statusSub");
 
-  if (rows.length && dot && text && sub) {
+  if (rows.length) {
     const now = new Date();
     const day = now.getDay(); // 0 Sun … 6 Sat
     const hour = now.getHours();
@@ -259,17 +261,16 @@ const faqs = [
       if (Number(r.dataset.day) === day) r.classList.add("today");
     });
 
-    if (day === 1) {
-      dot.classList.add("closed");
-      text.textContent = "Closed today";
-      sub.textContent = "See you Tuesday";
-    } else if (hour >= OPEN_HOUR && hour < CLOSE_HOUR) {
-      text.textContent = "Open now";
-      sub.textContent = "Kitchen open until 10pm";
-    } else {
-      dot.classList.add("closed");
-      text.textContent = "Closed right now";
-      sub.textContent =
+    // The pill carries the state as text + fill; there's no status dot.
+    const isOpen = day !== 1 && hour >= OPEN_HOUR && hour < CLOSE_HOUR;
+    if (pill) {
+      pill.textContent = isOpen ? "Open now" : "Closed";
+      pill.classList.toggle("closed", !isOpen);
+    }
+    if (sub) {
+      if (isOpen) sub.textContent = "Tonight until 10pm";
+      else if (day === 1) sub.textContent = "Closed Mondays — opens Tuesday 5pm";
+      else sub.textContent =
         hour < OPEN_HOUR ? "Opens today at 5pm" : "Opens tomorrow at 5pm";
     }
   }

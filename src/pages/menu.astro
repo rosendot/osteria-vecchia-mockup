@@ -33,7 +33,7 @@ import { dishes, categories, drinks } from "../data/menu";
         {
           dishes.map((d) => (
             <article class="m-card" data-cat={d.category}>
-              <ImageSlot label={d.slot} />
+              <ImageSlot label={d.slot} src={d.src} alt={d.alt} />
               <div class="m-body">
                 <div class="m-head">
                   <h3>{d.name}</h3>

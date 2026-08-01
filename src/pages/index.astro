@@ -7,17 +7,14 @@ import { testimonials } from "../data/testimonials";
 
 const pillars = [
   {
-    num: "I",
     title: "Pasta made fresh daily",
     body: "Rolled, cut, and shaped by hand every morning — never dried, never yesterday's.",
   },
   {
-    num: "II",
     title: "Wood-fired since day one",
     body: "The same brick oven we lit in 1987 still chars every pizza and braises every roast.",
   },
   {
-    num: "III",
     title: "Family recipes, nothing frozen",
     body: "Everything's made in-house from Nonna's recipe box. If it isn't fresh, it isn't served.",
   },
@@ -29,7 +26,10 @@ const featured = dishes.filter((d) => d.featured);
 <Layout title="Osteria Vecchia — Handmade Pasta · North End, Boston">
   <!-- ===================== HERO ===================== -->
   <section class="hero" id="top">
-    <ImageSlot label="Full-bleed photo: rustic pasta dish on dark wood, warm candlelight" />
+    <ImageSlot
+      src="/photos/home-hero.webp"
+      alt="A rustic bowl of hand-rolled tagliatelle in ragù on dark wood, lit by candlelight"
+    />
     <div class="scrim"></div>
     <div class="hero-inner">
       <div class="wrap">
@@ -58,7 +58,6 @@ const featured = dishes.filter((d) => d.featured);
         {
           pillars.map((p) => (
             <div class="pillar">
-              <div class="num">{p.num}</div>
               <div class="rule" />
               <h3>{p.title}</h3>
               <p>{p.body}</p>
@@ -81,7 +80,7 @@ const featured = dishes.filter((d) => d.featured);
         {
           featured.map((d) => (
             <article class="m-card">
-              <ImageSlot label={d.slot} />
+              <ImageSlot label={d.slot} src={d.src} alt={d.alt} />
               <div class="m-body">
                 <div class="m-head">
                   <h3>{d.name}</h3>

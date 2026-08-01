@@ -12,6 +12,9 @@ export interface Dish {
   category: Category;
   /** Caption for the empty photo slot. */
   slot: string;
+  /** Photo shipped in public/photos/. */
+  src: string;
+  alt: string;
   featured?: boolean;
 }
 
@@ -25,6 +28,8 @@ export const dishes: Dish[] = [
       "Creamy burrata, San Daniele prosciutto, grilled bread, a drizzle of oil.",
     category: "antipasti",
     slot: "Burrata & prosciutto plate",
+    src: "/photos/dish-burrata.webp",
+    alt: "Creamy burrata with prosciutto, tomatoes and basil on a rustic plate",
     featured: true,
   },
   {
@@ -33,6 +38,8 @@ export const dishes: Dish[] = [
     blurb: "Lightly fried calamari, shrimp, and lemon, with a side of spicy marinara.",
     category: "antipasti",
     slot: "Fritto misto platter",
+    src: "/photos/dish-fritto-misto.webp",
+    alt: "Golden fried calamari and shrimp on a slate board with marinara",
   },
   {
     name: "Caprese",
@@ -40,6 +47,8 @@ export const dishes: Dish[] = [
     blurb: "Fresh mozzarella, vine tomatoes, basil from the window box, sea salt.",
     category: "antipasti",
     slot: "Caprese salad",
+    src: "/photos/dish-caprese.webp",
+    alt: "Sliced mozzarella, vine tomatoes and basil, moodily lit",
   },
 
   // Pasta
@@ -51,6 +60,8 @@ export const dishes: Dish[] = [
       "Ribbons of fresh egg pasta in a slow Sunday ragù, three hours on the stove.",
     category: "pasta",
     slot: "Tagliatelle bolognese bowl",
+    src: "/photos/dish-tagliatelle.webp",
+    alt: "A bowl of fresh tagliatelle in a rich meat ragù on a wooden table",
     featured: true,
   },
   {
@@ -61,6 +72,8 @@ export const dishes: Dish[] = [
       "Pecorino, black pepper, and a little patience. Nothing else — that's the point.",
     category: "pasta",
     slot: "Cacio e pepe close-up",
+    src: "/photos/dish-cacio-e-pepe.webp",
+    alt: "Cacio e pepe in a dark bowl, pecorino and cracked black pepper",
     featured: true,
   },
   {
@@ -69,6 +82,8 @@ export const dishes: Dish[] = [
     blurb: "Hand-folded ravioli stuffed with Maine lobster in a light saffron cream.",
     category: "pasta",
     slot: "Lobster ravioli",
+    src: "/photos/dish-lobster-ravioli.webp",
+    alt: "Hand-folded ravioli plated dark with a light cream sauce",
   },
   {
     name: "Spaghetti alle Vongole",
@@ -76,6 +91,8 @@ export const dishes: Dish[] = [
     blurb: "Littleneck clams, garlic, white wine, chili, parsley. A little of the sea.",
     category: "pasta",
     slot: "Spaghetti alle vongole",
+    src: "/photos/dish-vongole.webp",
+    alt: "Spaghetti twirled high over littleneck clams, dramatically lit",
   },
 
   // Wood-Fired
@@ -87,6 +104,8 @@ export const dishes: Dish[] = [
       "San Marzano, fresh mozzarella, basil, straight from the wood-fired oven.",
     category: "woodfired",
     slot: "Margherita pizza from the oven",
+    src: "/photos/dish-margherita.webp",
+    alt: "A blistered margherita pizza on a peel in front of the wood fire",
     featured: true,
   },
   {
@@ -95,6 +114,8 @@ export const dishes: Dish[] = [
     blurb: "Spicy soppressata, mozzarella, a hit of chili honey on the way out.",
     category: "woodfired",
     slot: "Diavola pizza",
+    src: "/photos/dish-diavola.webp",
+    alt: "A spicy soppressata pizza just out of the flames of the brick oven",
   },
   {
     name: "Osso Buco",
@@ -102,6 +123,8 @@ export const dishes: Dish[] = [
     blurb: "Veal shank braised until it falls off the bone, over saffron risotto.",
     category: "woodfired",
     slot: "Osso buco with gremolata",
+    src: "/photos/dish-osso-buco.webp",
+    alt: "Braised veal shank over saffron risotto with a rosemary sprig",
     featured: true,
   },
   {
@@ -110,6 +133,8 @@ export const dishes: Dish[] = [
     blurb: "Whole Mediterranean sea bass, roasted over the fire, lemon and herbs.",
     category: "woodfired",
     slot: "Whole roasted branzino",
+    src: "/photos/dish-branzino.webp",
+    alt: "A whole roasted branzino on an oval platter with herbs and tomatoes",
   },
 
   // Dolci
@@ -121,6 +146,8 @@ export const dishes: Dish[] = [
       "Espresso-soaked ladyfingers, mascarpone, cocoa. Made fresh, gone fast.",
     category: "dolci",
     slot: "Tiramisù dusted with cocoa",
+    src: "/photos/dish-tiramisu.webp",
+    alt: "A slice of tiramisù dusted heavily with cocoa",
     featured: true,
   },
   {
@@ -129,6 +156,8 @@ export const dishes: Dish[] = [
     blurb: "Shells filled to order with sweet ricotta and candied orange.",
     category: "dolci",
     slot: "Cannoli",
+    src: "/photos/dish-cannoli.webp",
+    alt: "Two cannoli on a dark plate with a drizzle of chocolate",
   },
   {
     name: "Affogato",
@@ -136,6 +165,8 @@ export const dishes: Dish[] = [
     blurb: "A scoop of vanilla gelato drowned in a shot of hot espresso.",
     category: "dolci",
     slot: "Affogato",
+    src: "/photos/dish-affogato.webp",
+    alt: "Espresso being poured over gelato in a tall glass",
   },
 ];
 

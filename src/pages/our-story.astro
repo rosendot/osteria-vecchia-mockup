@@ -7,12 +7,16 @@ import CtaBanner from "../components/CtaBanner.astro";
 const rows = [
   {
     slot: "The 1987 brick oven, fire glowing",
+    src: "/photos/story-brick-oven.webp",
+    alt: "A pizza going into the glowing mouth of a brick wood-fired oven on a long peel",
     eyebrow: "The heart of the room",
     title: "The oven that started it all",
     body: "Giuseppe laid the bricks himself in the winter of '86. It's been lit almost every day since — the same oven that chars the Margherita, blisters the Diavola, and slow-braises the osso buco. We've patched it more times than we can count, but we've never replaced it. The room is built around it, and so is everything we cook.",
   },
   {
     slot: "Flour-dusted counter, hands rolling pasta",
+    src: "/photos/story-pasta-hands.webp",
+    alt: "Hands cutting fresh tagliatelle into nests on a flour-dusted counter",
     eyebrow: "Every single morning",
     title: "Pasta by hand, every morning",
     body: "Before the doors open, the counter's already dusted with flour. Tagliatelle gets rolled and cut, ravioli gets folded, and whatever we make is what you eat that night — never dried, never frozen, never yesterday's. It's slower and it's harder, and it's the whole reason people drive in from three towns over.",
@@ -25,24 +29,32 @@ const team = [
     role: "Founder",
     bio: "Opened the doors in '87 and still walks the floor most nights. Will tell you if you ordered wrong.",
     slot: "Portrait: Giuseppe",
+    src: "/photos/team-giuseppe.webp",
+    alt: "Giuseppe, the founder, smiling in the dining room",
   },
   {
     name: "Marco",
     role: "Head Chef",
     bio: "Giuseppe's son. Grew up on a stool by the oven and runs the kitchen now, recipes intact.",
     slot: "Portrait: Marco",
+    src: "/photos/team-marco.webp",
+    alt: "Marco, the head chef, working the line in the kitchen",
   },
   {
     name: "Lucia",
     role: "Pastry",
     bio: "The tiramisù and the cannoli are hers. Nothing leaves her station that she wouldn't serve her mother.",
     slot: "Portrait: Lucia",
+    src: "/photos/team-lucia.webp",
+    alt: "Lucia, the pastry chef, at her station in an apron",
   },
   {
     name: "Sofia",
     role: "Front of House",
     bio: "Knows the regulars by name and their tables by heart. She'll find you a seat and a good bottle.",
     slot: "Portrait: Sofia",
+    src: "/photos/team-sofia.webp",
+    alt: "Sofia, front of house, carrying a dish through the room",
   },
 ];
 
@@ -67,7 +79,10 @@ const stats = [
     <div class="wrap">
       <div class="spotlight-grid">
         <div class="spotlight-media">
-          <ImageSlot label="Portrait: Giuseppe, the founder, in the dining room" />
+          <ImageSlot
+            src="/photos/team-giuseppe.webp"
+            alt="Giuseppe, the founder, smiling in the dining room"
+          />
           <span class="badge">Giuseppe, 1987</span>
         </div>
         <div class="spotlight-body">
@@ -104,7 +119,7 @@ const stats = [
           rows.map((r, i) => (
             <div class={i % 2 === 1 ? "fa-row flip" : "fa-row"}>
               <div class="fa-media">
-                <ImageSlot label={r.slot} />
+                <ImageSlot label={r.slot} src={r.src} alt={r.alt} />
               </div>
               <div class="fa-body">
                 <p class="eyebrow">{r.eyebrow}</p>
@@ -129,7 +144,7 @@ const stats = [
         {
           team.map((m) => (
             <div class="team-card">
-              <ImageSlot label={m.slot} />
+              <ImageSlot label={m.slot} src={m.src} alt={m.alt} />
               <h3>{m.name}</h3>
               <p class="role">{m.role}</p>
               <p>{m.bio}</p>

@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import ImageSlot from "../components/ImageSlot.astro";
 import CrumbBar from "../components/CrumbBar.astro";
 import MapBox from "../components/MapBox.astro";
+import Icon from "../components/Icon.astro";
 
 const DIRECTIONS = "https://maps.google.com/?q=312+Hanover+St+Boston+MA+02113";
 ---
@@ -49,17 +50,17 @@ const DIRECTIONS = "https://maps.google.com/?q=312+Hanover+St+Boston+MA+02113";
   <section class="contact-bar">
     <div class="cb-grid">
       <a class="cb-item" href="tel:+16175550142">
-        <span class="cb-ico">☎</span>
+        <Icon name="phone" size={26} class="cb-ico" />
         <span class="cb-label">Call us</span>
         <span class="cb-value">617-555-0142</span>
       </a>
       <a class="cb-item" href="mailto:hello@osteriavecchia.com">
-        <span class="cb-ico">✉</span>
+        <Icon name="mail" size={26} class="cb-ico" />
         <span class="cb-label">Email us</span>
         <span class="cb-value">hello@osteriavecchia.com</span>
       </a>
       <a class="cb-item" href={DIRECTIONS} target="_blank" rel="noopener">
-        <span class="cb-ico">➤</span>
+        <Icon name="directions" size={26} class="cb-ico" />
         <span class="cb-label">Get directions</span>
         <span class="cb-value">312 Hanover St</span>
       </a>

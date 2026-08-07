@@ -28,7 +28,9 @@
   --header-h: 84px;
 }
 
-html { scroll-behavior: smooth; }
+/* scroll-padding-top keeps an in-page anchor jump from parking its target
+   under the fixed bar. */
+html { scroll-behavior: smooth; scroll-padding-top: var(--header-h); }
 body {
   margin: 0;
   font-family: var(--font-body);
@@ -543,11 +545,125 @@ a { color: inherit; }
 .foot-concept a { color: rgba(255,255,255,.62); text-decoration: underline; text-underline-offset: 2px; }
 .foot-concept a:hover { color: var(--color-cream); }
 
-/* ===== RESPONSIVE ===== */
+/* ===== RESPONSIVE =====
+   Three blocks, ordered widest → narrowest so a narrower query wins at equal
+   specificity. 940 = header/drawer, 980 = layout grids, 720 = phone layout. */
+
+/* The drawer breakpoint is 940px, not 720. Five links plus the CTA and the
+   two-line wordmark need the full row, and below ~940 the flex line has no
+   slack left: the brand/nav gap measures 0 from 721px all the way up, and to
+   make room the browser wraps "Osteria Vecchia" to two lines, then its
+   "NORTH END · BOSTON" subtitle under that, "Our Story" to two lines, and
+   "BOOK A TABLE" to three. The header overruns its own 84px and collides
+   with the hero headline.
+
+   NOTHING automated caught this. .site-header is `position: fixed`, so the
+   page never gains a scrollbar, no element exceeds the viewport, and the nav
+   is not clipped — it is *reflowing*, which overflowX, zoomedOut and a
+   nav.right check all pass. It was found by screenshotting the bar at 721,
+   860 and 940. Screenshot the header on every mockup; the geometry checks
+   have a blind spot here. */
+@media (max-width: 940px) {
+  /* Hide the header CTA — same node reappears in the drawer, so the child
+     combinator is required. Nothing is lost: "Book a Table" is the last item
+     in the open drawer, and again in the hero. */
+  .nav > .lnk { display: none; }
+  .nav > .btn { display: none; }
+  .nav-toggle { display: block; padding: 10px; width: 44px; height: 46px; }
+  .site-header .wrap { padding-right: var(--space-4); }
+
+  /* 84px is a desktop bar — a tenth of an 844px phone screen before any
+     content. This belongs at the drawer breakpoint, not the phone one: once
+     the nav is a burger there is nothing in the bar that needs 84px. Retune
+     the token rather than hardcoding a height — --header-h is also read by
+     .nav.open's `top`, the scrim's `inset`, and .crumb-bar's padding on
+     every inner page. */
+  :root { --header-h: 64px; }
+  /* .scrolled's 70px is a desktop figure too. On a 64px bar it makes the
+     header *taller* on scroll while the drawer stays anchored to --header-h,
+     tucking the panel under the bar it hangs from. */
+  .site-header.scrolled { height: var(--header-h); }
+  .brand .mark { width: 36px; height: 36px; }
+  .brand .name { font-size: var(--text-xl); }
+  /* Keep the wordmark on one line now that it has the room. */
+  .brand .name { white-space: nowrap; }
+  .brand .name small { white-space: nowrap; }
+
+  .nav.open {
+    position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 40;
+    flex-direction: column; align-items: stretch; gap: 0;
+    background: var(--color-dark);
+    padding: var(--space-4) var(--space-6) var(--space-6);
+    box-shadow: var(--shadow-lg);
+    /* A landscape phone has ~360px of height; five links plus a button do
+       not fit, so the panel has to be able to scroll itself. */
+    max-height: calc(100svh - var(--header-h));
+    overflow-y: auto; overscroll-behavior: contain;
+  }
+  .nav.open > .lnk { display: block; padding: var(--space-4) 0; border-bottom: 1px solid rgba(255,255,255,.1); }
+  .nav.open > .btn { display: flex; margin-top: var(--space-4); justify-content: center; }
+
+  /* The bar is transparent until scrolled. Open the drawer at the top of the
+     page and the hero photo shows through the top strip while the drawer
+     below is solid — they read as two unrelated panels. */
+  .site-header:has(.nav.open) { background: var(--color-dark); }
+  /* Scrim under the drawer and over the page — also the tap target that
+     closes it. */
+  .site-header:has(.nav.open)::after {
+    content: ""; position: fixed; inset: var(--header-h) 0 0;
+    z-index: 30; background: rgba(26, 18, 8, .55); pointer-events: none;
+  }
+
+  /* --- Touch targets belong at the DRAWER breakpoint, not the phone one.
+     Below 941px this is a touch device by the site's own reckoning — that is
+     why the burger is showing — so an 18px link fails at 900 just as it does
+     at 390. Scoping these to 720 would leave the whole 721–940 band failing
+     while the phone widths read clean. --- */
+  .site-header .brand, .site-footer .brand { min-height: 44px; }
+  .foot-social a { width: 44px; height: 44px; }
+  /* Footer links are 18px of line in a dense list. Pad rather than resize;
+     collapsing the list gap pays for most of the added height. */
+  .foot-col ul { gap: 0; }
+  .foot-col ul a { display: block; padding: 13px 0; }
+  .contact-row .v a, .loc-card .loc-row .v a, .cb-item, .foot-col p a { display: inline-block; padding: 11px 0; }
+  .cb-item { display: flex; }
+  /* Standalone controls, not inline links in a sentence, so WCAG's
+     inline-prose exemption does not apply. Pad and pull the margin back so
+     the block does not grow. */
+  .text-link { padding: 13px 0; margin: -13px 0; }
+
+  /* max-width: 15ch is a desktop headline device. At 721–940 it holds the h1
+     to 433–564px inside a 680–900px viewport, breaking a 39-character line
+     over three while a quarter of the width sits unused. Let it use the
+     column below the drawer breakpoint. */
+  .hero h1 { max-width: 22ch; }
+  /* Short crumb labels ("Home") fail on *width* once the height is fixed. */
+  .crumbs a, .crumbs .here { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
+  .crumbs { gap: var(--space-2); margin-bottom: var(--space-3); }
+  .menu-tab { min-height: 44px; min-width: 44px; }
+  .btn { padding-top: var(--space-3); padding-bottom: var(--space-3); min-height: 44px; }
+  .faq-item summary { min-height: 44px; }
+}
+
 @media (max-width: 980px) {
-  .feature-grid, .t-grid, .menu-grid, .team-grid { grid-template-columns: repeat(2, 1fr); }
-  .spotlight-grid, .fa-row, .cs-grid, .mapembed-grid, .hero-split, .loc-grid { grid-template-columns: 1fr; }
+  .feature-grid, .t-grid, .menu-grid, .team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* minmax(0, 1fr), not a bare 1fr. A bare `1fr` is minmax(auto, 1fr) and
+     that `auto` is the item's *min-content* width — which is how
+     .mapembed-grid floored /contact/ at 325px and made the browser zoom the
+     whole page out. No overflow check fires on that: the page is scaled,
+     not scrolled. */
+  .spotlight-grid, .fa-row, .cs-grid, .mapembed-grid, .hero-split, .loc-grid { grid-template-columns: minmax(0, 1fr); }
   .fa-row.flip .fa-media { order: 0; }
+
+  /* An email address is one unbreakable token — hello@osteriavecchia.com is
+     181px wide, sitting in a .contact-row whose .k label already claims
+     84px. */
+  .contact-row .v, .contact-card .v, .loc-card .loc-row .v, .foot-col p { overflow-wrap: anywhere; }
+
+  /* iOS Safari zooms the page when a field under 16px takes focus, and
+     --text-base is 0.95rem = 15.2px. This belongs at 980, not the drawer
+     breakpoint — an iPad is a touch device and zooms identically. */
+  .field input, .field select, .field textarea { font-size: 16px; }
   .spotlight-media { aspect-ratio: 16/10; }
   .stat-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-10); }
   .stat:nth-child(2)::after { display: none; }
@@ -560,15 +676,110 @@ a { color: inherit; }
   .nav.open { position: fixed; top: var(--header-h); left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0; background: var(--color-dark); padding: var(--space-4) var(--space-6) var(--space-6); box-shadow: var(--shadow-lg); }
   .nav.open .lnk { display: block; padding: var(--space-4) 0; border-bottom: 1px solid rgba(255,255,255,.1); }
   .nav.open .btn { margin-top: var(--space-4); justify-content: center; }
-  .feature-grid, .t-grid, .menu-grid, .team-grid, .form-grid { grid-template-columns: 1fr; }
-  .stat-grid { grid-template-columns: 1fr; gap: var(--space-8); }
+  /* Once stacked, switch the photo to 16:9. A 4:3 crop at full width is
+     227px of the row, and these landscape photos read better wide anyway. */
+  .fa-media { aspect-ratio: 16 / 9; }
+  .fa-rows { gap: var(--space-10); }
+
+  /* --- Card grids: paired only where the card's *contents* survive 145px.
+     Measured each; the answer differs per grid and height alone is not the
+     test — line length decides it. --- */
+  .form-grid { grid-template-columns: minmax(0, 1fr); }
+
+  /* The menu grid is the single biggest section on the site: 5578px on
+     /menu/, 2699px on the home teaser. Two-up with the description visible
+     is 13 characters per line — a ragged column of single words — so the
+     description goes sr-only rather than display:none: the text stays in the
+     DOM for screen readers and search, and every card keeps its photo, name
+     and price, which is what you scan a menu grid for. 5578 → 1837 and
+     2699 → 1076. */
+  .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+  .m-body { padding: var(--space-4); }
+  .m-head { flex-direction: column; align-items: flex-start; gap: 2px; }
+  /* Dish names wrap to one or two lines depending on length, which leaves
+     dead white under the shorter card in each row. Reserve two lines so the
+     price always sits on the same baseline across a row. */
+  .m-head h3 { font-size: var(--text-xl); min-height: calc(2 * var(--text-xl) * var(--leading-snug)); }
+  .m-body p {
+    position: absolute; width: 1px; height: 1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+
+  /* Crew: 2535 → 771px. Same call as the menu blurb — two-up with the bio
+     visible is 21 CPL, so the bio goes sr-only and the card keeps the face,
+     the name and the role. :not(.role) matters: .role is a two-word job
+     title, and a card with a face and a name but no role reads as
+     unfinished. */
+  .team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+  .team-card p:not(.role) {
+    position: absolute; width: 1px; height: 1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+
+  /* Stats pair — each cell is a figure and three or four words, so 17 CPL is
+     a label, not prose. 479 → 274px. The ::after dividers are drawn between
+     columns for the desktop 4-up row and read as stray marks once it wraps. */
+  .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-8) var(--space-4); }
   .stat:not(:last-child)::after { display: none; }
+
+  /* NOT paired, each measured and rejected:
+       .t-grid       — testimonial cards: 1144 → 1363px, and 8 CPL. Worse.
+       .feature-grid — three pillars leave an orphan: 741 → 778px. Worse.
+       .loc-grid     — key/value address rows: 825 → 2068px at 2 CPL, the
+                       worst of any grid across all six mockups. */
+  .feature-grid, .t-grid { grid-template-columns: minmax(0, 1fr); }
   .cb-grid { grid-template-columns: 1fr; }
   .cb-item { border-right: 0; border-bottom: 1px solid rgba(255,255,255,.1); }
-  .footer-grid { grid-template-columns: 1fr; gap: var(--space-8); }
+  /* Keep the three link columns paired all the way down — do NOT fall back
+     to one. Measured both ways: 1236px single-column vs 953px two-up at
+     390px, with the *same* four wrapped lines either way, so the pairing
+     costs nothing in readability and saves 283px. Four full-height rows are
+     simply more expensive than a few labels wrapping in a half-width column.
+     The brand block spans both: a 38ch blurb and the social row do not
+     survive a 159px column. */
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: var(--space-8) var(--space-6); }
+  /* The brand block spans both — a 38ch blurb and the social row do not
+     survive a 159px column. Hours spans both too, because there are THREE
+     link columns: Menu (5 links) pairs with Visit, which leaves Hours alone
+     in a half-width column with dead space beside it. Full-width reads as a
+     deliberate closing row instead of an orphan, and costs nothing — 953px
+     either way. (Giving Menu the full width instead costs 124px.) */
+  .footer-grid > div:first-child,
+  .footer-grid > div:last-child { grid-column: 1 / -1; }
   .section { padding: var(--space-12) var(--space-5); }
   .res-form { padding: var(--space-6); }
   .hero { min-height: 90vh; }
+
+  /* Section chrome — --space-16 of vertical padding is 128px per section and
+     there are six to eight per page. */
+  .section-head { margin-bottom: var(--space-8); }
+  .section-head p { font-size: var(--text-lg); }
+  .pillar p, .fa-body p, .faq-item .ans p, .spotlight-body p { font-size: var(--text-base); line-height: var(--leading-relaxed); }
+  .faq-item summary { padding: var(--space-4) var(--space-5); font-size: var(--text-lg); }
+  .faq-item .ans { padding: 0 var(--space-5) var(--space-5); }
+  .t-card { padding: var(--space-6); }
+  .t-card blockquote { font-size: var(--text-lg); }
+  .loc-card { padding: var(--space-6); }
+  .hours-rows { padding: var(--space-5); }
+  .hours-head { padding: var(--space-4) var(--space-5); }
+  .cb-item { padding: var(--space-6); }
+  .menu-more { margin-top: var(--space-8); }
+
+  /* min-height: 440px is sized against the contact card beside it on desktop.
+     Stacked there is nothing to match and it becomes half the section. */
+  .mapembed .map-box { min-height: 280px; }
+  .hero-split .hs-media { min-height: 240px; }
+
+  /* clamp floors are desktop figures: clamp(2.2rem, 5vw, 3.6rem) puts 5vw at
+     16px on a 320px screen, so the 2.2rem *floor* wins and renders 35px into
+     a 280px column. Give each floor a mobile value; the vw term still
+     governs upward. */
+  .crumb-bar h1 { font-size: clamp(1.75rem, 7vw, 2.2rem); }
+  .section-head h2 { font-size: clamp(1.6rem, 6.5vw, 2rem); }
+  .hero h1 { font-size: clamp(2rem, 8.5vw, 2.8rem); }
+  .hero-split .hs-body h1 { font-size: clamp(1.75rem, 7vw, 2.2rem); }
+  .cta-banner h2, .footer-cta h2 { font-size: clamp(1.6rem, 6.5vw, 2rem); }
+  .spotlight-body h2 { font-size: clamp(1.6rem, 6.5vw, 2rem); }
 }
 
 /* =====================================================================

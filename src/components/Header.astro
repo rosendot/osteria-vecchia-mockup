@@ -19,7 +19,7 @@ const links = [
       <img class="mark" src="/emblem.png" alt="" width="44" height="44" aria-hidden="true" />
       <span class="name">Osteria Vecchia<small>North End · Boston</small></span>
     </a>
-    <nav class="nav" id="nav">
+    <nav class="nav" id="nav" aria-label="Primary">
       {
         links.map((l) => (
           <a
@@ -33,7 +33,7 @@ const links = [
       }
       <a class="btn" href="/reservations/">Book a Table</a>
     </nav>
-    <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false">
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
       <span></span><span></span><span></span>
     </button>
   </div>
@@ -49,15 +49,108 @@ const links = [
   // Mobile nav
   const navToggle = document.getElementById("navToggle");
   const nav = document.getElementById("nav");
-  navToggle?.addEventListener("click", () => {
-    const open = nav?.classList.toggle("open");
-    navToggle.setAttribute("aria-expanded", open ? "true" : "false");
-  });
-  nav?.addEventListener("click", (e) => {
-    const t = e.target as HTMLElement;
-    if (t.classList.contains("lnk") || t.classList.contains("btn")) {
+  if (navToggle && nav) {
+    const focusables = () =>
+      Array.from(nav.querySelectorAll<HTMLElement>("a[href]")).filter(
+        (el) => el.offsetParent !== null,
+      );
+
+    const isOpen = () => navToggle.getAttribute("aria-expanded") === "true";
+
+    // Scroll lock. `overflow: hidden` on <body> is not enough: the scroll
+    // lives on the document, so hiding the overflow reflows the page and
+    // *drops* the offset — the reader lands somewhere else on close. Pinning
+    // the body holds the position exactly, and it is the only variant iOS
+    // Safari honours.
+    let lockedY = 0;
+    const lockScroll = () => {
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${lockedY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.overflow = "hidden";
+    };
+    const unlockScroll = () => {
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.overflow = "";
+      // behavior: "instant" is required — html sets scroll-behavior: smooth,
+      // which would otherwise animate this restore all the way from 0, flying
+      // the whole page past on the way back to where the reader already was.
+      window.scrollTo({ top: lockedY, left: 0, behavior: "instant" });
+    };
+
+    const openNav = () => {
+      // Read the offset BEFORE any DOM mutation: adding .open makes the panel
+      // position:fixed, which reflows the document and can reset scrollY
+      // before we have recorded it.
+      lockedY = window.scrollY;
+      nav.classList.add("open");
+      navToggle.setAttribute("aria-expanded", "true");
+      navToggle.setAttribute("aria-label", "Close menu");
+      lockScroll();
+      focusables()[0]?.focus({ preventScroll: true });
+      document.addEventListener("keydown", onKeydown);
+    };
+
+    const closeNav = (restoreFocus = true) => {
       nav.classList.remove("open");
-      navToggle?.setAttribute("aria-expanded", "false");
+      navToggle.setAttribute("aria-expanded", "false");
+      navToggle.setAttribute("aria-label", "Open menu");
+      unlockScroll();
+      document.removeEventListener("keydown", onKeydown);
+      if (restoreFocus) navToggle.focus({ preventScroll: true });
+    };
+
+    function onKeydown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeNav();
+        return;
+      }
+      // Trap Tab inside the drawer. Untrapped, the first Tab leaves the menu
+      // and lands on the hero buttons underneath it — a keyboard user driving
+      // content they cannot see. The burger is in the cycle so Tab reaches the
+      // control that closes the panel.
+      if (e.key === "Tab") {
+        const items = [...focusables(), navToggle!];
+        if (!items.length) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     }
-  });
+
+    navToggle.addEventListener("click", () => (isOpen() ? closeNav() : openNav()));
+
+    // Close on link tap. Every link is a real navigation, so don't steal focus
+    // back to the burger on the way out.
+    nav.addEventListener("click", (e) => {
+      const t = e.target as HTMLElement;
+      if (t.closest(".lnk") || t.closest(".btn")) closeNav(false);
+    });
+
+    // Close when the page behind the scrim is tapped — the gesture people
+    // reach for before hunting for an X.
+    document.addEventListener("click", (e) => {
+      if (!isOpen()) return;
+      const t = e.target as Node;
+      if (nav.contains(t) || navToggle.contains(t)) return;
+      closeNav();
+    });
+
+    // Reset if the viewport grows past the drawer breakpoint while it's open,
+    // or the body stays locked with no visible menu to unlock it.
+    window.matchMedia("(min-width: 941px)").addEventListener("change", (e) => {
+      if (e.matches && isOpen()) closeNav(false);
+    });
+  }
 </script>
